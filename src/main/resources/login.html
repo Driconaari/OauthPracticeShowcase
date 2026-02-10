@@ -1,0 +1,9 @@
+<script>
+  async function doLogin() {
+   const res = await fetch('/login', {method: 'POST'});
+   const data = await res.json();
+
+   localStroage.setItem('my_jwt', data.acces_token);
+   alert("Token saved to browser storage");
+  }
+</script>
