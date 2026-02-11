@@ -1,19 +1,27 @@
 package com.authproject.auth;
 
-import com.authproject.util.JwtUtils;
+import com.authproject.model.User;
+import com.authproject.util.JSONParser;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpExchange;
 import java.io.OutputStream;
 
+
 public class AuthHandler implements HttpHandler {
+
+    private TokenProvider tokenProvider = new TokenProvider();
+
     @Override
     public void handle(HttpExchange exchange) {
         try {
-            // In a real app, you'd parse POST body for credentials
-            // For this refresh, let's assume login is successful:
-            String token = JwtUtils.createToken("developer_user");
+            //1
+            User user = new User("dev_user", "password123");
+            //2
+            String token = tokenProvider.generateTokenForUser(user);
+            //3
+            String response = JSONParser.createTokenResponse(token);
 
-            String response = "{\"access_token\":\"" + token + "\"}";
+
             exchange.getResponseHeaders().set("Content-Type", "application/json");
             exchange.sendResponseHeaders(200, response.length());
 
