@@ -1,9 +1,33 @@
-<script>
-  async function doLogin() {
-   const res = await fetch('/login', {method: 'POST'});
-   const data = await res.json();
+<!DOCTYPE html>
+<html>
+<body>
+<h2>Java OAuth Login</h2>
+<input type="text" id="user" placeholder="Username">
+<button onclick="login()">Login</button>
 
-   localStroage.setItem('my_jwt', data.acces_token);
-   alert("Token saved to browser storage");
-  }
+<hr>
+<button onclick="getData()">Access Protected Data</button>
+<div id="result"></div>
+
+<script>
+    async function login() {
+        // In this ground-up version, we just hit the endpoint
+        const response = await fetch('/login', { method: 'POST' });
+        const data = await response.json();
+
+        // Save the JWT to LocalStorage
+        localStorage.setItem('jwt_token', data.access_token);
+        document.getElementById('result').innerText = "Login Successful! Token Saved.";
+    }
+
+    async function getData() {
+        const token = localStorage.getItem('jwt_token');
+        const response = await fetch('/api/data', {
+            headers: { 'Authorization': 'Bearer ' + token }
+        });
+        const text = await response.text();
+        document.getElementById('result').innerText = text;
+    }
 </script>
+</body>
+</html>
