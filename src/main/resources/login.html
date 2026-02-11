@@ -3,6 +3,7 @@
 <body>
 <h2>Java OAuth Login</h2>
 <input type="text" id="user" placeholder="Username">
+<input type="password" id="pass" placeholder="Password">
 <button onclick="login()">Login</button>
 
 <hr>
@@ -11,13 +12,22 @@
 
 <script>
     async function login() {
-        // In this ground-up version, we just hit the endpoint
-        const response = await fetch('/login', { method: 'POST' });
-        const data = await response.json();
+      const UserVal = document.getElementById('user').value;
+      const passVal = document.getElementById('pass').value;
 
-        // Save the JWT to LocalStorage
-        localStorage.setItem('jwt_token', data.access_token);
-        document.getElementById('result').innerText = "Login Successful! Token Saved.";
+      const  response = await fetch('/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username: UserVal, password: passVal })
+      });
+
+      const data = await response.json();
+      if (response.status === 200) {
+          localStorage.setItem('jwt_token', data.access_token);
+          alert('Login successful!');
+      } else {
+          alert('Login failed: ' + data.error);
+      }
     }
 
     async function getData() {
